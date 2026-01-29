@@ -105,10 +105,10 @@ export default function HomePage() {
 
         {/* Action Buttons */}
         <motion.div
-          className="w-full grid grid-cols-2 gap-4"
+          className="w-full grid grid-cols-1 gap-4"
           variants={itemVariants}
         >
-          <button
+          {/* <button
             onClick={() => setActiveModal("location")}
             className="flex flex-col items-center justify-center gap-2 py-6 rounded-2xl bg-gradient-to-b from-[#5a0505] to-[#2a0101] border border-[#800000] shadow-lg active:scale-95 transition-transform"
           >
@@ -116,7 +116,7 @@ export default function HomePage() {
             <span className="text-[11px] uppercase tracking-widest font-black text-white">
               Branches
             </span>
-          </button>
+          </button> */}
 
           <button
             onClick={() => setActiveModal("contact")}
