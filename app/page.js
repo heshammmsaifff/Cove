@@ -9,6 +9,7 @@ import {
   FaInstagram,
   FaFacebookF,
   FaTiktok,
+  FaPenFancy,
   FaTimes,
 } from "react-icons/fa";
 import { MdRestaurantMenu } from "react-icons/md";
@@ -100,6 +101,11 @@ export default function HomePage() {
             label="Menu"
             href="https://drive.google.com/file/d/1Sk8ugGPC8KjuB_XU59za7PC_jej-P-nS/view?usp=drivesdk"
             icon={<MdRestaurantMenu />}
+          />
+          <SocialLink
+            label="Leave a Comment"
+            href="/comment"
+            icon={<FaPenFancy />}
           />
         </motion.div>
 
@@ -215,22 +221,42 @@ export default function HomePage() {
 
 // ... (نفس الـ imports)
 
+import Link from "next/link";
+
 function SocialLink({ label, href, icon }) {
+  // فحص ما إذا كان الرابط داخلياً (يبدأ بـ /) أو خارجياً
+  const isInternal = href.startsWith("/");
+
   const handleClick = (e) => {
-    // إذا كان الرابط مجرد # لا تفعل شيئاً
     if (href === "#") {
       e.preventDefault();
       return;
     }
   };
 
+  // إذا كان الرابط داخلياً، نستخدم مكون Link لسرعة أفضل
+  if (isInternal) {
+    return (
+      <Link
+        href={href}
+        onClick={handleClick}
+        className="w-full flex items-center gap-5 px-6 py-5 rounded-2xl bg-[#1a0505] border border-white/5 active:bg-[#3a0505] transition-colors shadow-md"
+      >
+        <span className="text-2xl text-[#d4a373]">{icon}</span>
+        <span className="text-xs font-bold tracking-widest uppercase text-white">
+          {label}
+        </span>
+      </Link>
+    );
+  }
+
+  // إذا كان الرابط خارجياً، نستخدم <a> مع target="_blank"
   return (
     <a
       href={href}
       onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
-      // إضافة خاصية تخبر بعض المتصفحات بفتح الرابط خارج التطبيق
       data-rel="external"
       className="w-full flex items-center gap-5 px-6 py-5 rounded-2xl bg-[#1a0505] border border-white/5 active:bg-[#3a0505] transition-colors shadow-md"
     >
