@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { GrMapLocation } from "react-icons/gr";
 import {
   FaPhoneAlt,
   FaWhatsapp,
@@ -10,20 +9,20 @@ import {
   FaFacebookF,
   FaTiktok,
   FaTimes,
+  FaPaperPlane,
 } from "react-icons/fa";
 import { MdRestaurantMenu } from "react-icons/md";
 import { BiCommentDetail } from "react-icons/bi";
-
 import { CiLocationOn } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
+import Link from "next/link";
 
 export default function HomePage() {
   const logoRef = useRef(null);
   const [activeModal, setActiveModal] = useState(null);
 
   useEffect(() => {
-    // حركة اللوجو العائم
     gsap.to(logoRef.current, {
       y: 8,
       duration: 2,
@@ -35,7 +34,6 @@ export default function HomePage() {
 
   const closeModal = () => setActiveModal(null);
 
-  // إعدادات ظهور العناصر بالترتيب
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -54,7 +52,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-6 overflow-hidden bg-[radial-gradient(circle_at_top,_#4a0404_0%,_#0a0a0a_100%)]">
+    <main className="min-h-screen flex items-center justify-center px-6 py-10 overflow-x-hidden bg-[radial-gradient(circle_at_top,_#4a0404_0%,_#0a0a0a_100%)]">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -77,6 +75,11 @@ export default function HomePage() {
           />
         </motion.div>
 
+        {/* --- الإضافة المطلوبة: حقل العروض --- */}
+        <motion.div variants={itemVariants} className="w-full">
+          <OffersInput />
+        </motion.div>
+
         {/* Social Media Links */}
         <motion.div
           className="w-full flex flex-col gap-3"
@@ -89,7 +92,7 @@ export default function HomePage() {
           />
           <SocialLink
             label="Facebook"
-            href="https://www.facebook.com/profile.php?id=61587289618847&mibextid=wwXIfr&rdid=dx46vV2rnazVuFP7&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1MrS5t8v3K%2F%3Fmibextid%3DwwXIfr#"
+            href="https://www.facebook.com/profile.php?id=61587289618847&mibextid=wwXIfr"
             icon={<FaFacebookF />}
           />
           <SocialLink
@@ -114,16 +117,6 @@ export default function HomePage() {
           className="w-full grid grid-cols-1 gap-4"
           variants={itemVariants}
         >
-          {/* <button
-            onClick={() => setActiveModal("location")}
-            className="flex flex-col items-center justify-center gap-2 py-6 rounded-2xl bg-gradient-to-b from-[#5a0505] to-[#2a0101] border border-[#800000] shadow-lg active:scale-95 transition-transform"
-          >
-            <GrMapLocation className="text-2xl text-[#d4a373]" />
-            <span className="text-[11px] uppercase tracking-widest font-black text-white">
-              Branches
-            </span>
-          </button> */}
-
           <button
             onClick={() => setActiveModal("contact")}
             className="flex flex-col items-center justify-center gap-2 py-6 rounded-2xl bg-gradient-to-b from-[#5a0505] to-[#2a0101] border border-[#800000] shadow-lg active:scale-95 transition-transform"
@@ -172,44 +165,22 @@ export default function HomePage() {
 
               <div className="flex flex-col gap-4">
                 <h3 className="text-[#d4a373] font-black text-center mb-4 tracking-widest uppercase text-sm">
-                  {activeModal === "location"
-                    ? "Our Locations"
-                    : "Direct Contact"}
+                  Direct Contact
                 </h3>
-                {activeModal === "location" ? (
-                  <>
-                    <ModalItem
-                      title="Branch 1"
-                      sub="Sharqia – Faqous"
-                      href="https://www.google.com/maps/place/Baleno+Cafe+Fakos/@30.727814,31.789743,749m/data=!3m2!1e3!4b1!4m6!3m5!1s0x14f8259719820a55:0x8f394f75ecf36542!8m2!3d30.727814!4d31.789743!16s%2Fg%2F11k6f3mws6!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDEyNi4wIKXMDSoKLDEwMDc5MjA3MUgBUAM%3D"
-                      icon={<CiLocationOn />}
-                    />
-                    <ModalItem
-                      title="Branch 2 'take away'"
-                      sub="Sharqia – Faqous"
-                      href="#" //wait for branch 2 link
-                      icon={<CiLocationOn />}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <ModalItem
-                      title="WhatsApp"
-                      sub="01031006308"
-                      href="https://wa.me/201031006308"
-                      icon={<FaWhatsapp />}
-                      color="text-green-500"
-                    />
-
-                    <ModalItem
-                      title="Phone Call"
-                      sub="01031006308"
-                      href="tel:01031006308"
-                      icon={<FaPhoneAlt />}
-                      color="text-blue-400"
-                    />
-                  </>
-                )}
+                <ModalItem
+                  title="WhatsApp"
+                  sub="01031006308"
+                  href="https://wa.me/201031006308"
+                  icon={<FaWhatsapp />}
+                  color="text-green-500"
+                />
+                <ModalItem
+                  title="Phone Call"
+                  sub="01031006308"
+                  href="tel:01031006308"
+                  icon={<FaPhoneAlt />}
+                  color="text-blue-400"
+                />
               </div>
             </motion.div>
           </motion.div>
@@ -219,12 +190,94 @@ export default function HomePage() {
   );
 }
 
-// ... (نفس الـ imports)
+// --- Components ---
 
-import Link from "next/link";
+function OffersInput() {
+  const [phone, setPhone] = useState("");
+  const [status, setStatus] = useState("idle"); // idle, loading, success
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!phone) return;
+    setStatus("loading");
+
+    try {
+      const res = await fetch("/api/comment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "OFFERS SUBSCRIPTION",
+          message: `Phone: ${phone}`,
+        }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setPhone("");
+        setTimeout(() => setStatus("idle"), 3000);
+      } else {
+        setStatus("idle");
+      }
+    } catch (err) {
+      setStatus("idle");
+    }
+  };
+
+  return (
+    <div className="w-full bg-[#1a0505] border border-[#800000]/30 rounded-[2rem] p-5 shadow-2xl relative overflow-hidden">
+      <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#800000] blur-[50px] opacity-20" />
+      <label className="block text-[10px] text-[#d4a373] uppercase tracking-[0.2em] mb-3 ml-1 font-bold">
+        To get our offers put your number
+      </label>
+      <form onSubmit={handleSubmit} className="relative flex items-center">
+        {/* كود الدولة الثابت */}
+        <span className="absolute left-4 text-[#d4a373] font-bold text-sm pointer-events-none">
+          +2
+        </span>
+
+        <input
+          type="tel"
+          placeholder="01xxxxxxxxx"
+          minLength={11}
+          maxLength={11}
+          required
+          className="w-full bg-black/40 border border-white/5 rounded-xl py-3.5 pl-10 pr-12 text-white text-sm focus:outline-none focus:border-[#d4a373]/50 transition-all placeholder:text-white/10"
+          value={phone}
+          onChange={(e) => {
+            // منع المستخدم من كتابة أي شيء غير الأرقام
+            const val = e.target.value.replace(/\D/g, "");
+            setPhone(val);
+          }}
+        />
+
+        <button
+          type="submit"
+          disabled={status === "loading" || status === "success"}
+          className="absolute right-1.5 p-2.5 bg-[#800000] rounded-lg text-white hover:bg-[#a00000] active:scale-90 transition-all disabled:bg-green-700 disabled:opacity-80"
+        >
+          {status === "loading" ? (
+            <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+          ) : status === "success" ? (
+            <FaPaperPlane className="scale-90" />
+          ) : (
+            <FaPaperPlane />
+          )}
+        </button>
+      </form>
+      {status === "success" && (
+        <motion.p
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-[9px] text-green-500 mt-2 ml-1 uppercase font-bold tracking-widest"
+        >
+          Sent successfully!
+        </motion.p>
+      )}
+    </div>
+  );
+}
 
 function SocialLink({ label, href, icon }) {
-  // فحص ما إذا كان الرابط داخلياً (يبدأ بـ /) أو خارجياً
   const isInternal = href.startsWith("/");
 
   const handleClick = (e) => {
@@ -234,7 +287,6 @@ function SocialLink({ label, href, icon }) {
     }
   };
 
-  // إذا كان الرابط داخلياً، نستخدم مكون Link لسرعة أفضل
   if (isInternal) {
     return (
       <Link
@@ -250,14 +302,12 @@ function SocialLink({ label, href, icon }) {
     );
   }
 
-  // إذا كان الرابط خارجياً، نستخدم <a> مع target="_blank"
   return (
     <a
       href={href}
       onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
-      data-rel="external"
       className="w-full flex items-center gap-5 px-6 py-5 rounded-2xl bg-[#1a0505] border border-white/5 active:bg-[#3a0505] transition-colors shadow-md"
     >
       <span className="text-2xl text-[#d4a373]">{icon}</span>

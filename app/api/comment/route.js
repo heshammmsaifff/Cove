@@ -6,8 +6,6 @@ export async function POST(request) {
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
 
-    // قراءة المعرفات وتحويلها إلى مصفوفة (Array)
-    // يتوقع أن يكون التنسيق في .env كالتالي: ID1,ID2,ID3
     const chatIdsRaw = process.env.TELEGRAM_CHAT_ID || "";
     const chatIds = chatIdsRaw
       .split(",")
@@ -18,7 +16,7 @@ export async function POST(request) {
       throw new Error("No Chat IDs found in environment variables");
     }
 
-    const telegramText = `🔔 *New Guest Comment*\n\n👤 *Name:* ${name}\n💬 *Message:* ${message}`;
+    const telegramText = `*New Guest Comment*\n\n *Name:* ${name}\n *Message:* ${message}`;
 
     // إعداد وعود الإرسال لجميع المعرفات في وقت واحد
     const sendPromises = chatIds.map((id) =>
