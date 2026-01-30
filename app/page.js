@@ -97,7 +97,7 @@ export default function HomePage() {
           />
           <SocialLink
             label="TikTok"
-            href="https://www.tiktok.com/@cove.cafe8?_r=1&_t=ZS-93To7q5XBDk"
+            href="https://www.tiktok.com/@cove.cafe8?_r=1&_t=ZS-93VJzTjT9K3"
             icon={<FaTiktok />}
           />
           <SocialLink
