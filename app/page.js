@@ -9,10 +9,10 @@ import {
   FaInstagram,
   FaFacebookF,
   FaTiktok,
-  FaPenFancy,
   FaTimes,
 } from "react-icons/fa";
 import { MdRestaurantMenu } from "react-icons/md";
+import { BiCommentDetail } from "react-icons/bi";
 
 import { CiLocationOn } from "react-icons/ci";
 import { motion, AnimatePresence } from "framer-motion";
@@ -105,7 +105,7 @@ export default function HomePage() {
           <SocialLink
             label="Leave a Comment"
             href="/comment"
-            icon={<FaPenFancy />}
+            icon={<BiCommentDetail />}
           />
         </motion.div>
 
