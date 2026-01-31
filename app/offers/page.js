@@ -136,9 +136,11 @@ function OffersContent() {
                     maxLength={11}
                     className="w-full bg-black/40 border border-white/5 rounded-2xl p-4 pl-12 text-sm focus:outline-none focus:border-[#d4a373] transition-all text-white placeholder:text-white/20"
                     value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
+                    onChange={(e) => {
+                      // هذه السطر يقوم بحذف أي حرف ليس رقماً فور كتابته
+                      const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+                      setFormData({ ...formData, phone: onlyNums });
+                    }}
                   />
                 </div>
               </div>
