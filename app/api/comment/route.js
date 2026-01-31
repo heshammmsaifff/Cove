@@ -5,7 +5,6 @@ export async function POST(request) {
     const { name, message } = await request.json();
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
-
     const chatIdsRaw = process.env.TELEGRAM_CHAT_ID || "";
     const chatIds = chatIdsRaw
       .split(",")
@@ -16,9 +15,17 @@ export async function POST(request) {
       throw new Error("No Chat IDs found in environment variables");
     }
 
-    const telegramText = `*New Guest Comment*\n\n *Name:* ${name}\n *Message:* ${message}`;
+    let header = "💬 *New Guest Comment*";
+    let finalMessage = message;
 
-    // إعداد وعود الإرسال لجميع المعرفات في وقت واحد
+    if (message.includes("SUBSCRIPTION_REQUEST:")) {
+      header = "🎁 *NEW OFFERS SUBSCRIPTION*";
+      finalMessage = message.replace("SUBSCRIPTION_REQUEST:", "Phone Number:");
+    }
+    // --------------------------------------
+
+    const telegramText = `${header}\n\n *Name:* ${name}\n *Details:* ${finalMessage}`;
+
     const sendPromises = chatIds.map((id) =>
       fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
         method: "POST",
@@ -31,14 +38,11 @@ export async function POST(request) {
       }),
     );
 
-    // تنفيذ جميع الطلبات وانتظار النتائج
     const results = await Promise.all(sendPromises);
-
-    // التأكد من أن طلباً واحداً على الأقل نجح
     const anySuccess = results.some((res) => res.ok);
 
     if (!anySuccess) {
-      throw new Error("Failed to send message to any of the Telegram IDs");
+      throw new Error("Failed to send message to Telegram");
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
