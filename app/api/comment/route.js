@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(request) {
   try {
-    const { name, message } = await request.json();
+    const body = await request.json();
+    const { name, message } = body;
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatIdsRaw = process.env.TELEGRAM_CHAT_ID || "";
@@ -11,20 +12,46 @@ export async function POST(request) {
       .map((id) => id.trim())
       .filter((id) => id !== "");
 
-    if (chatIds.length === 0) {
-      throw new Error("No Chat IDs found in environment variables");
+    if (!botToken || chatIds.length === 0) {
+      return NextResponse.json(
+        { success: false, error: "Server Configuration Error" },
+        { status: 500 },
+      );
     }
 
-    let header = "💬 *New Guest Comment*";
-    let finalMessage = message;
+    let header = "GUEST FEEDBACK";
+    let finalMessage = message || "";
+    let tableInfo = "TABLE: unknown!\n"; // القيمة الافتراضية
 
-    if (message.includes("SUBSCRIPTION_REQUEST:")) {
-      header = "🎁 *NEW OFFERS SUBSCRIPTION*";
-      finalMessage = message.replace("SUBSCRIPTION_REQUEST:", "Phone Number:");
+    // منطق الفلترة المطور
+    if (finalMessage.includes("SUBSCRIPTION_REQUEST:")) {
+      header = "NEW OFFERS SUBSCRIPTION";
+      tableInfo = ""; // لا تظهر الطاولة في الاشتراكات
+
+      // استخراج الرقم فقط سواء بوجود TABLE_ID أو بدونه
+      if (finalMessage.includes("|")) {
+        const parts = finalMessage.split("|");
+        const subPart = parts.find((p) => p.includes("SUBSCRIPTION_REQUEST:"));
+        finalMessage = subPart
+          ? subPart.replace("SUBSCRIPTION_REQUEST: ", "Phone: ").trim()
+          : finalMessage;
+      } else {
+        finalMessage = finalMessage
+          .replace("SUBSCRIPTION_REQUEST: ", "Phone: ")
+          .trim();
+      }
+    } else if (finalMessage.includes("TABLE_ID:")) {
+      const parts = finalMessage.split(" | ");
+      const tablePart = parts[0] || "";
+      const contentPart = parts[1] || "";
+
+      const tableId = tablePart.replace("TABLE_ID: ", "").trim();
+      tableInfo = `TABLE: ${tableId}\n`;
+      finalMessage = contentPart.replace("COMMENT: ", "").trim();
     }
-    // --------------------------------------
 
-    const telegramText = `${header}\n\n *Name:* ${name}\n *Details:* ${finalMessage}`;
+    // تنسيق الرسالة النهائي (نظيف تماماً من الإيموجي)
+    const telegramText = `${header}\n\n${tableInfo}Name: ${name || "Anonymous"}\nDetails: ${finalMessage}`;
 
     const sendPromises = chatIds.map((id) =>
       fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
@@ -39,15 +66,15 @@ export async function POST(request) {
     );
 
     const results = await Promise.all(sendPromises);
-    const anySuccess = results.some((res) => res.ok);
+    const successCount = results.filter((res) => res.ok).length;
 
-    if (!anySuccess) {
-      throw new Error("Failed to send message to Telegram");
+    if (successCount === 0) {
+      throw new Error("Telegram API failed");
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error("Telegram Route Error:", error.message);
+    console.error("API ERROR:", error.message);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 },

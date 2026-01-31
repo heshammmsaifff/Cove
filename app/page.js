@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
 import Image from "next/image";
 import {
   FaPhoneAlt,
@@ -17,13 +17,16 @@ import { BiCommentDetail } from "react-icons/bi";
 import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export default function HomePage() {
+function HomeContent() {
   const logoRef = useRef(null);
   const [activeModal, setActiveModal] = useState(null);
 
+  const searchParams = useSearchParams();
+  const table = searchParams.get("table");
+
   useEffect(() => {
-    // حركة اللوجو العائم
     gsap.to(logoRef.current, {
       y: 8,
       duration: 2,
@@ -35,7 +38,6 @@ export default function HomePage() {
 
   const closeModal = () => setActiveModal(null);
 
-  // إعدادات ظهور العناصر بالترتيب
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -82,19 +84,16 @@ export default function HomePage() {
           className="w-full flex flex-col gap-3"
           variants={itemVariants}
         >
-          {/* زر العروض المميز جداً */}
+          {/* زر العروض المميز - يمرر رقم الطاولة */}
           <Link
-            href="/offers"
+            href={table ? `/offers?table=${table}` : "/offers"}
             className="w-full relative flex items-center gap-5 px-6 py-6 rounded-2xl bg-gradient-to-r from-[#b11226] to-[#600000] border border-[#d4a373]/30 shadow-[0_0_20px_rgba(177,18,38,0.3)] active:scale-95 transition-all overflow-hidden group"
           >
-            {/* أنيميشن النبض خلف الأيقونة */}
             <span className="absolute right-0 top-0 w-24 h-full bg-white/5 skew-x-[-20deg] group-hover:translate-x-full transition-transform duration-700" />
-
             <div className="relative">
               <div className="absolute inset-0 bg-[#d4a373] blur-lg opacity-40 animate-pulse" />
               <FaGift className="relative text-2xl text-[#d4a373]" />
             </div>
-
             <div className="flex flex-col">
               <span className="text-[13px] font-black tracking-[0.15em] uppercase text-white">
                 Exclusive Offers
@@ -105,7 +104,6 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* الروابط العادية */}
           <SocialLink
             label="Instagram"
             href="https://www.instagram.com/cove_cafe1?igsh=MXM1cXIwdDh3d25ndg=="
@@ -126,9 +124,11 @@ export default function HomePage() {
             href="https://drive.google.com/file/d/1Sk8ugGPC8KjuB_XU59za7PC_jej-P-nS/view?usp=drivesdk"
             icon={<MdRestaurantMenu />}
           />
+
+          {/* زر التعليقات - يمرر رقم الطاولة */}
           <SocialLink
             label="Leave a Comment"
-            href="/comment"
+            href={table ? `/comment?table=${table}` : "/comment"}
             icon={<BiCommentDetail />}
           />
         </motion.div>
@@ -149,16 +149,15 @@ export default function HomePage() {
           </button>
         </motion.div>
 
-        {/* Footer */}
         <motion.p
           variants={itemVariants}
           className="mt-4 text-[10px] text-white/30 tracking-[0.3em] uppercase"
         >
-          Cove Official Socials
+          Cove Official Socials {table && `| Table ${table}`}
         </motion.p>
       </motion.div>
 
-      {/* Modals */}
+      {/* Contact Modal */}
       <AnimatePresence>
         {activeModal && (
           <motion.div
@@ -183,7 +182,6 @@ export default function HomePage() {
               >
                 <FaTimes size={20} />
               </button>
-
               <div className="flex flex-col gap-4">
                 <h3 className="text-[#d4a373] font-black text-center mb-4 tracking-widest uppercase text-sm">
                   Direct Contact
@@ -211,36 +209,39 @@ export default function HomePage() {
   );
 }
 
-// --- المكونات الفرعية ---
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <HomeContent />
+    </Suspense>
+  );
+}
 
 function SocialLink({ label, href, icon }) {
   const isInternal = href.startsWith("/");
-
-  if (isInternal) {
-    return (
-      <Link
-        href={href}
-        className="w-full flex items-center gap-5 px-6 py-5 rounded-2xl bg-[#1a0505] border border-white/5 active:bg-[#2a0101] transition-colors shadow-md"
-      >
-        <span className="text-2xl text-[#d4a373]">{icon}</span>
-        <span className="text-xs font-bold tracking-widest uppercase text-white">
-          {label}
-        </span>
-      </Link>
-    );
-  }
-
-  return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="w-full flex items-center gap-5 px-6 py-5 rounded-2xl bg-[#1a0505] border border-white/5 active:bg-[#2a0101] transition-colors shadow-md"
-    >
+  const content = (
+    <>
       <span className="text-2xl text-[#d4a373]">{icon}</span>
       <span className="text-xs font-bold tracking-widest uppercase text-white">
         {label}
       </span>
+    </>
+  );
+  const classes =
+    "w-full flex items-center gap-5 px-6 py-5 rounded-2xl bg-[#1a0505] border border-white/5 active:bg-[#2a0101] transition-colors shadow-md";
+
+  return isInternal ? (
+    <Link href={href} className={classes}>
+      {content}
+    </Link>
+  ) : (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={classes}
+    >
+      {content}
     </a>
   );
 }
