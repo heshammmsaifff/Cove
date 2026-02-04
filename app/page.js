@@ -11,6 +11,7 @@ import {
   FaTimes,
   FaPaperPlane,
   FaGift,
+  FaLocationArrow,
 } from "react-icons/fa";
 import { MdRestaurantMenu } from "react-icons/md";
 import { BiCommentDetail } from "react-icons/bi";
@@ -135,9 +136,10 @@ function HomeContent() {
 
         {/* Action Buttons */}
         <motion.div
-          className="w-full grid grid-cols-1 gap-4"
+          className="w-full grid grid-cols-2 gap-4"
           variants={itemVariants}
         >
+          {/* contact modal */}
           <button
             onClick={() => setActiveModal("contact")}
             className="flex flex-col items-center justify-center gap-2 py-6 rounded-2xl bg-gradient-to-b from-[#1a0505] to-[#0a0a0a] border border-[#800000]/30 shadow-lg active:scale-95 transition-transform"
@@ -145,6 +147,17 @@ function HomeContent() {
             <FaPhoneAlt className="text-xl text-[#d4a373]" />
             <span className="text-[11px] uppercase tracking-widest font-black text-white">
               Contact Us
+            </span>
+          </button>
+
+          {/* location modal */}
+          <button
+            onClick={() => setActiveModal("location")}
+            className="flex flex-col items-center justify-center gap-2 py-6 rounded-2xl bg-gradient-to-b from-[#1a0505] to-[#0a0a0a] border border-[#800000]/30 shadow-lg active:scale-95 transition-transform"
+          >
+            <FaLocationArrow className="text-xl text-[#d4a373]" />
+            <span className="text-[11px] uppercase tracking-widest font-black text-white">
+              Location
             </span>
           </button>
         </motion.div>
@@ -159,7 +172,7 @@ function HomeContent() {
 
       {/* Contact Modal */}
       <AnimatePresence>
-        {activeModal && (
+        {activeModal === "contact" && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -199,6 +212,48 @@ function HomeContent() {
                   href="tel:01031006308"
                   icon={<FaPhoneAlt />}
                   color="text-blue-400"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* location modal */}
+      <AnimatePresence>
+        {activeModal === "location" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/90 backdrop-blur-md"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="w-full max-w-sm bg-[#1a0505] border-t sm:border border-[#800000] p-8 rounded-t-[2.5rem] sm:rounded-[2.5rem] relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="w-12 h-1.5 bg-white/10 rounded-full mx-auto mb-6 sm:hidden" />
+              <button
+                onClick={closeModal}
+                className="absolute top-6 right-6 text-white/50 hover:text-white"
+              >
+                <FaTimes size={20} />
+              </button>
+              <div className="flex flex-col gap-4">
+                <h3 className="text-[#d4a373] font-black text-center mb-4 tracking-widest uppercase text-sm">
+                  Our Location
+                </h3>
+                <ModalItem
+                  title="Branch 1"
+                  sub="Faqous - Sharkia"
+                  href=" https://maps.app.goo.gl/n9qdXSzBEvuhGCyg9?g_st=iw"
+                  icon={<FaLocationArrow color="wheat" />}
+                  color="text-green-500"
                 />
               </div>
             </motion.div>
