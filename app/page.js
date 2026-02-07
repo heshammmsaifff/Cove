@@ -139,7 +139,7 @@ function HomeContent() {
           className="w-full grid grid-cols-2 gap-4"
           variants={itemVariants}
         >
-          {/* contact modal */}
+          {/* contact Button */}
           <button
             onClick={() => setActiveModal("contact")}
             className="flex flex-col items-center justify-center gap-2 py-6 rounded-2xl bg-gradient-to-b from-[#1a0505] to-[#0a0a0a] border border-[#800000]/30 shadow-lg active:scale-95 transition-transform"
@@ -150,7 +150,7 @@ function HomeContent() {
             </span>
           </button>
 
-          {/* location modal */}
+          {/* location Button */}
           <button
             onClick={() => setActiveModal("location")}
             className="flex flex-col items-center justify-center gap-2 py-6 rounded-2xl bg-gradient-to-b from-[#1a0505] to-[#0a0a0a] border border-[#800000]/30 shadow-lg active:scale-95 transition-transform"
@@ -251,7 +251,14 @@ function HomeContent() {
                 <ModalItem
                   title="Branch 1"
                   sub="Faqous - Sharkia"
-                  href=" https://maps.app.goo.gl/n9qdXSzBEvuhGCyg9?g_st=iw"
+                  href="https://maps.app.goo.gl/n9qdXSzBEvuhGCyg9?g_st=iw"
+                  icon={<FaLocationArrow color="wheat" />}
+                  color="text-green-500"
+                />
+                <ModalItem
+                  title="Branch 2 'take away'"
+                  sub="Faqous - Sharkia"
+                  href="https://www.google.com/maps/place/30%C2%B043'25.5%22N+31%C2%B047'34.7%22E/@30.72375,31.7929722,749m/data=!3m2!1e3!4b1!4m4!3m3!8m2!3d30.72375!4d31.7929722?hl=en&entry=ttu&g_ep=EgoyMDI2MDIwNC4wIKXMDSoKLDEwMDc5MjA3MUgBUAM%3D"
                   icon={<FaLocationArrow color="wheat" />}
                   color="text-green-500"
                 />
