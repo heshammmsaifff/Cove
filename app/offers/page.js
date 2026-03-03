@@ -21,9 +21,10 @@ function OffersContent() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (status === "loading") return;
+
     setStatus("loading");
 
-    // هنا نرسل الكلمة المفتاحية SUBSCRIPTION_REQUEST ليتعرف عليها الـ API
     const payload = {
       name: formData.name,
       message: tableNumber
@@ -137,7 +138,6 @@ function OffersContent() {
                     className="w-full bg-black/40 border border-white/5 rounded-2xl p-4 pl-12 text-sm focus:outline-none focus:border-[#d4a373] transition-all text-white placeholder:text-white/20"
                     value={formData.phone}
                     onChange={(e) => {
-                      // هذه السطر يقوم بحذف أي حرف ليس رقماً فور كتابته
                       const onlyNums = e.target.value.replace(/[^0-9]/g, "");
                       setFormData({ ...formData, phone: onlyNums });
                     }}
@@ -148,9 +148,34 @@ function OffersContent() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="w-full py-5 bg-gradient-to-r from-[#d4a373] to-[#b48c5e] text-[#1a0505] rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all disabled:opacity-50 mt-2"
+                className="w-full py-5 bg-gradient-to-r from-[#d4a373] to-[#b48c5e] text-[#1a0505] rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl transition-all mt-2 active:enabled:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {status === "loading" ? "Processing..." : "Get Special Access"}
+                {status === "loading" ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg
+                      className="animate-spin h-4 w-4 text-[#1a0505]"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        fill="none"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Processing...
+                  </span>
+                ) : (
+                  "Get Special Access"
+                )}
               </button>
 
               <p className="text-[8px] text-center text-white/30 uppercase tracking-widest mt-2">
